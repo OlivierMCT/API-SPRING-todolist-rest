@@ -34,15 +34,19 @@ public class TodoEntity {
   @Column(nullable = false)
   private Date updatedAt;
 
-  public TodoEntity(){}
-  public TodoEntity(Integer id, String label, Date dueDate, boolean done, Double latitude, Double longitude) {
+  public TodoEntity(Integer id, String label, Date dueDate, boolean done, Double latitude, Double longitude,
+      Date createdAt, Date updatedAt) {
     this.id = id;
     this.label = label;
     this.dueDate = dueDate;
     this.done = done;
     this.latitude = latitude;
     this.longitude = longitude;
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
   }
+  public TodoEntity(){}
+
 
   public Integer getId() {
     return id;

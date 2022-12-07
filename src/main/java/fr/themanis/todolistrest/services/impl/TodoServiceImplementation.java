@@ -9,8 +9,6 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import javax.swing.text.Position;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,12 +26,13 @@ public class TodoServiceImplementation implements TodoService {
   private TodoRepository todoRepo;
 
   private TodoModel toModel(TodoEntity entity) {
-    return new TodoModel(entity.getId(), entity.getLabel(), entity.getDueDate(), entity.isDone(), isRemovable(entity), getPosition(entity));
+    return new TodoModel(entity.getId(), entity.getLabel(), entity.getDueDate(), entity.isDone(), isRemovable(entity),
+        getPosition(entity));
   }
 
   private TodoCoordinate getPosition(TodoEntity entity) {
     TodoCoordinate position = null;
-    if(entity.getLatitude() != null && entity.getLongitude() != null)
+    if (entity.getLatitude() != null && entity.getLongitude() != null)
       position = new TodoCoordinate(entity.getLatitude(), entity.getLongitude());
     return position;
   }
@@ -43,8 +42,8 @@ public class TodoServiceImplementation implements TodoService {
   }
 
   @PostConstruct
-  private void addTodoExample(){
-    if(todoRepo.count() == 0){
+  private void addTodoExample() {
+    if (todoRepo.count() == 0) {
       List<TodoEntity> entites = new ArrayList<>();
       List<String> descriptions = Arrays.asList("Partir en sac à dos dans un endroit inconnu",
           "Trouver le boulot qui te plait", "Adopter un chien", "Voir un opéra", "Faire un tour en Mongolfière",
@@ -105,22 +104,22 @@ public class TodoServiceImplementation implements TodoService {
   }
 
   @Override
-  public List<TodoModel> getAll() {
+  public List<TodoModel> findAll() {
     return this.todoRepo.findAll().stream().map(e -> toModel(e)).collect(Collectors.toList());
   }
 
   @Override
   public List<TodoModel> search(String keyword) throws TodoServiceException {
-    if(keyword == null || keyword.trim().length() == 0) 
+    if (keyword == null || keyword.trim().length() == 0)
       throw new TodoServiceException(12, "le mot-clé est obligatoire pour effectuer une recherche");
     return this.todoRepo.findByLabelContaining(keyword).stream().map(e -> toModel(e)).collect(Collectors.toList());
   }
 
   @Override
-  public TodoModel getOne(int id) throws TodoServiceException {
+  public TodoModel findOne(int id) throws TodoServiceException {
     Optional<TodoEntity> entity = todoRepo.findById(id);
-    if(entity.isEmpty()) 
-      throw new TodoServiceException(11, "la tâche n°"+ id +" est introuvable");
+    if (entity.isEmpty())
+      throw new TodoServiceException(11, "la tâche n°" + id + " est introuvable");
     return toModel(entity.get());
   }
 
